@@ -30,9 +30,6 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan -out=plan.tfplan -var "acr_username=${{ secrets.ACR_USERNAME }}" -var "acr_password=${{ secrets.ACR_PASSWORD }}"
-
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve plan.tfplan -var "acr_username=${{ secrets.ACR_USERNAME }}" -var "acr_password=${{ secrets.ACR_PASSWORD }}"
+        run: terraform apply -auto-approve plan.tfplan

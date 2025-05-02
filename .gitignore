@@ -13,3 +13,4 @@ terraform.tfvars
 
 # Ignore plan output files (optional, if you generate them)
 *.tfplan.terraform/
+.terraform/
