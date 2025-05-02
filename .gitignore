@@ -1,0 +1,15 @@
+# macOS system files
+.DS_Store
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Terraform provider lock file
+.terraform.lock.hcl
+
+# Terraform hidden directory
+terraform.tfvars
+
+# Ignore plan output files (optional, if you generate them)
+*.tfplan
