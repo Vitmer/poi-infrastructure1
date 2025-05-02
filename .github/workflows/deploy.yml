@@ -24,12 +24,18 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Generate terraform.tfvars
+        run: echo "${{ secrets.TF_VARS_FILE }}" > terraform.tfvars
+
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Terraform Plan
+        run: terraform plan -out=plan.tfplan
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve plan.tfplan
