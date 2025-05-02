@@ -25,7 +25,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Generate terraform.tfvars
-        run: echo "${{ secrets.TF_VARS_FILE }}" > terraform.tfvars
+        run: |
+          printf "%s" "${{ secrets.TF_VARS_FILE }}" > terraform.tfvars
 
       - name: Terraform Init
         run: terraform init
