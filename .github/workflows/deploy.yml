@@ -24,8 +24,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Decrypt terraform.tfvars.gpg
-        run: gpg --batch --yes --passphrase "${{ secrets.TF_VARS_PASSPHRASE }}" -o terraform.tfvars -d terraform.tfvars.gpg
+      - name: Generate terraform.tfvars from GitHub Secrets
+        run: |
+          echo "subscription_id = \"${{ secrets.TF_VAR_SUBSCRIPTION_ID }}\"" > terraform.tfvars
+          echo "resource_group_name = \"${{ secrets.TF_VAR_RESOURCE_GROUP_NAME }}\"" >> terraform.tfvars
+          echo "location = \"${{ secrets.TF_VAR_LOCATION }}\"" >> terraform.tfvars
+          echo "acr_name = \"${{ secrets.TF_VAR_ACR_NAME }}\"" >> terraform.tfvars
+          echo "prefix = \"${{ secrets.TF_VAR_PREFIX }}\"" >> terraform.tfvars
+          echo "python_image_name = \"${{ secrets.TF_VAR_PYTHON_IMAGE_NAME }}\"" >> terraform.tfvars
+          echo "spring_image_name = \"${{ secrets.TF_VAR_SPRING_IMAGE_NAME }}\"" >> terraform.tfvars
+          echo "python_app_name = \"${{ secrets.TF_VAR_PYTHON_APP_NAME }}\"" >> terraform.tfvars
+          echo "spring_app_name = \"${{ secrets.TF_VAR_SPRING_APP_NAME }}\"" >> terraform.tfvars
+          echo "python_port = \"${{ secrets.TF_VAR_PYTHON_PORT }}\"" >> terraform.tfvars
+          echo "spring_port = \"${{ secrets.TF_VAR_SPRING_PORT }}\"" >> terraform.tfvars
+          echo "acr_username = \"${{ secrets.TF_VAR_ACR_USERNAME }}\"" >> terraform.tfvars
+          echo "acr_password = \"${{ secrets.TF_VAR_ACR_PASSWORD }}\"" >> terraform.tfvars
 
       - name: Terraform Init
         run: terraform init
