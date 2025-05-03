@@ -31,11 +31,47 @@ jobs:
           echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .subscriptionId)" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .tenantId)" >> $GITHUB_ENV
 
-      - name: Debug ARM environment variables
-        run: env | grep ARM
+      - name: Fetch secrets from Key Vault
+        run: |
+          # Имя Key Vault
+          KEYVAULT_NAME="dev-kv-WcuDo123"
 
-      - name: Decrypt terraform.tfvars.gpg
-        run: gpg --batch --yes --passphrase "${{ secrets.TF_VARS_PASSPHRASE }}" -o terraform.tfvars -d terraform.tfvars.gpg
+          # Получаем значения секретов
+          SUBSCRIPTION_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name subscription-id --query value -o tsv)
+          TENANT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name tenant-id --query value -o tsv)
+          RESOURCE_GROUP_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name resource-group-name --query value -o tsv)
+          LOCATION=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name location --query value -o tsv)
+          ACR_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name acr-name --query value -o tsv)
+          PREFIX=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name prefix --query value -o tsv)
+          PYTHON_IMAGE_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name python-image-name --query value -o tsv)
+          SPRING_IMAGE_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name spring-image-name --query value -o tsv)
+          PYTHON_APP_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name python-app-name --query value -o tsv)
+          SPRING_APP_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name spring-app-name --query value -o tsv)
+          PYTHON_PORT=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name python-port --query value -o tsv)
+          SPRING_PORT=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name spring-port --query value -o tsv)
+          ACR_USERNAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name acr-username --query value -o tsv)
+          ACR_PASSWORD=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name acr-password --query value -o tsv)
+
+          # Generate terraform.tfvars
+          cat <<EOF > terraform.tfvars
+          subscription_id = "${SUBSCRIPTION_ID}"
+          tenant_id = "${TENANT_ID}"
+          resource_group_name = "${RESOURCE_GROUP_NAME}"
+          location = "${LOCATION}"
+          acr_name = "${ACR_NAME}"
+          prefix = "${PREFIX}"
+          python_image_name = "${PYTHON_IMAGE_NAME}"
+          spring_image_name = "${SPRING_IMAGE_NAME}"
+          python_app_name = "${PYTHON_APP_NAME}"
+          spring_app_name = "${SPRING_APP_NAME}"
+          python_port = "${PYTHON_PORT}"
+          spring_port = "${SPRING_PORT}"
+          acr_username = "${ACR_USERNAME}"
+          acr_password = "${ACR_PASSWORD}"
+          EOF
+
+      - name: Debug terraform.tfvars
+        run: cat terraform.tfvars
 
       - name: Terraform Init
         run: terraform init
