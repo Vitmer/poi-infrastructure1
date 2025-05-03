@@ -24,6 +24,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Debug ARM environment variables
+        run: env | grep ARM
+
       - name: Decrypt terraform.tfvars.gpg
         run: gpg --batch --yes --passphrase "${{ secrets.TF_VARS_PASSPHRASE }}" -o terraform.tfvars -d terraform.tfvars.gpg
 
