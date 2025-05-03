@@ -23,27 +23,25 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-  
+
       - name: Export ARM environment variables
         run: |
           echo "ARM_CLIENT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId)" >> $GITHUB_ENV
           echo "ARM_CLIENT_SECRET=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientSecret)" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .subscriptionId)" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .tenantId)" >> $GITHUB_ENV
-  
+
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-  
-      - name: Azure CLI login
-        run: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
-        
+
+      - name: Install Key Vault extension
+        run: az extension add --name keyvault
+
       - name: Fetch secrets from Key Vault
         run: |
-          # Имя Key Vault
           KEYVAULT_NAME="dev-kv-WcuDo123"
 
-          # Получаем значения секретов
           SUBSCRIPTION_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name subscription-id --query value -o tsv)
           TENANT_ID=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name tenant-id --query value -o tsv)
           RESOURCE_GROUP_NAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name resource-group-name --query value -o tsv)
@@ -59,7 +57,6 @@ jobs:
           ACR_USERNAME=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name acr-username --query value -o tsv)
           ACR_PASSWORD=$(az keyvault secret show --vault-name $KEYVAULT_NAME --name acr-password --query value -o tsv)
 
-          # Generate terraform.tfvars
           cat <<EOF > terraform.tfvars
           subscription_id = "${SUBSCRIPTION_ID}"
           tenant_id = "${TENANT_ID}"
