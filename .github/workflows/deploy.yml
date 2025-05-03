@@ -24,8 +24,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Generate terraform.tfvars from base64
-        run: echo "${{ secrets.TF_VARS_FILE_BASE64 }}" | base64 -d > terraform.tfvars
+      - name: Decrypt terraform.tfvars.gpg
+        run: gpg --batch --yes --passphrase "${{ secrets.TF_VARS_PASSPHRASE }}" -o terraform.tfvars -d terraform.tfvars.gpg
 
       - name: Terraform Init
         run: terraform init
