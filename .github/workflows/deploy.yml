@@ -77,6 +77,9 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Run Terraform Linter
+        uses: terraform-linters/tflint-action@v0.43.1
+
       - name: Terraform Plan
         run: terraform plan -out=plan.tfplan
 

@@ -43,3 +43,48 @@ Please provide:
 
 ## 🚀 Good luck!
 
+
+_______________________________________________________________________________________________
+
+# Azure DevOps Terraform Deployment
+
+This project deploys a cloud infrastructure on Azure using Terraform and GitHub Actions CI/CD.
+
+## 🔥 Components:
+
+- **Resource Group** (`dev-rg`)
+- **Key Vault** (`dev-kv-WcuDo123`) — stores secrets
+- **Azure Container Registry** (`devacr12345`)
+- **App Service Plan** (Linux B1)
+- **Two Linux Web Apps:**
+    - Python app: Docker image from ACR
+    - Spring Boot app: Docker image from ACR
+- **RBAC Assignments:**
+    - Managed identity → AcrPull
+    - Managed identity → Key Vault access
+
+## 🛠️ Workflow:
+
+- Uses **GitHub Actions** to automate:
+  - Terraform init
+  - Terraform validate
+  - Terraform plan
+  - Terraform apply
+- Fetches secrets dynamically from Azure Key Vault
+- No hardcoded credentials/secrets in code
+
+## 🚀 Usage:
+
+1. Clone repo
+2. Configure `AZURE_CREDENTIALS` secret in GitHub
+3. Push to `main` branch → CI/CD pipeline will deploy infra
+
+## 📎 Outputs:
+
+Terraform will print URLs of deployed apps after `terraform apply`:
+
+```bash
+Outputs:
+
+python_app_url = <python app URL>
+spring_app_url = <spring app URL>
