@@ -68,8 +68,6 @@ data "azurerm_key_vault_secret" "spring_port" {
 # 3. Configure the Azure provider
 provider "azurerm" {
   features {}
-  subscription_id = var.subscription_id
-  tenant_id       = var.tenant_id
 }
 
 # 4. Create a resource group
