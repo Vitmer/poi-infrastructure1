@@ -40,6 +40,12 @@ jobs:
           echo "acr_username = \"${{ secrets.TF_VAR_ACR_USERNAME }}\"" >> terraform.tfvars
           echo "acr_password = \"${{ secrets.TF_VAR_ACR_PASSWORD }}\"" >> terraform.tfvars
 
+      - name: Debug terraform.tfvars
+        run: |
+          echo "===== DEBUG terraform.tfvars content ====="
+          cat terraform.tfvars
+          echo "========================================="
+
       - name: Terraform Init
         run: terraform init
 
