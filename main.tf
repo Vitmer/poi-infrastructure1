@@ -183,11 +183,9 @@ resource "azurerm_role_assignment" "acr_pull_spring" {
 }
 
 output "python_app_url" {
-  description = "URL of the Python Web App"
-  value       = azurerm_linux_web_app.python_app.default_site_hostname
+  value = azurerm_linux_web_app.python_app.default_hostname
 }
 
 output "spring_app_url" {
-  description = "URL of the Spring Boot Web App"
-  value       = azurerm_linux_web_app.spring_app.default_site_hostname
+  value = azurerm_linux_web_app.spring_app.default_hostname
 }
