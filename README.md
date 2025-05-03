@@ -88,3 +88,26 @@ Outputs:
 
 python_app_url = <python app URL>
 spring_app_url = <spring app URL>
+
+
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    User[Developer pushes code to GitHub] --> GitHubActions[GitHub Actions Workflow]
+    GitHubActions --> AzureLogin[Azure Login Action]
+    AzureLogin --> FetchSecrets[Fetch secrets from Key Vault]
+    FetchSecrets --> TerraformInit[Terraform Init]
+    TerraformInit --> TerraformPlan[Terraform Plan]
+    TerraformPlan --> TerraformApply[Terraform Apply]
+    
+    TerraformApply --> ACR[Azure Container Registry]
+    TerraformApply --> KeyVault[Azure Key Vault]
+    TerraformApply --> AppServicePlan[Azure App Service Plan]
+    TerraformApply --> PythonApp[Python App Service (Container)]
+    TerraformApply --> SpringApp[Spring Boot App Service (Container)]
+    
+    PythonApp -->|Docker Image| ACR
+    SpringApp -->|Docker Image| ACR
+    PythonApp -->|Secrets| KeyVault
+    SpringApp -->|Secrets| KeyVault
