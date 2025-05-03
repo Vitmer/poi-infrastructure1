@@ -35,8 +35,8 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      - name: Install Key Vault extension
-        run: az extension add --name keyvault
+      - name: Debug Azure CLI auth
+        run: az account show
 
       - name: Fetch secrets from Key Vault
         run: |
