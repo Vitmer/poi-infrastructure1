@@ -35,9 +35,6 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      - name: Debug Azure CLI auth
-        run: az account show
-
       - name: Fetch secrets from Key Vault
         run: |
           KEYVAULT_NAME="dev-kv-WcuDo123"
@@ -73,9 +70,6 @@ jobs:
           acr_username = "${ACR_USERNAME}"
           acr_password = "${ACR_PASSWORD}"
           EOF
-
-      - name: Debug terraform.tfvars
-        run: cat terraform.tfvars
 
       - name: Terraform Init
         run: terraform init
